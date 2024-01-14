@@ -24,24 +24,35 @@ export const getProductById = async(req, res) => {
     }
 }
 
-export const createProduct = async(req, res) => {
-    const {name, price} = req.body;
+export const createProduct = async (req, res) => {
+    const { name, price } = req.body;
     try {
+        if (!name) {
+            return res.status(400).json({ msg: "Name is not filled" });
+        } else if (!price) {
+            return res.status(400).json({ msg: "Price is not filled" });
+        }
         const product = await prisma.product.create({
-            data:{
+            data: {
                 name: name,
                 price: price
             }
         });
-        res.status(201).json(product)
+        res.status(201).json(product);
     } catch (error) {
-        res.status(400).json({msg: error.message})
+        res.status(400).json({ msg: "An error occurred while creating the product" });
     }
-}
+};
+
 
 export const updateProduct = async(req, res) => {
     const {name, price} = req.body;
     try {
+        if (!name) {
+            return res.status(400).json({ msg: "Name cannot be empty" });
+        } else if (!price) {
+            return res.status(400).json({ msg: "Price cannot be empty" });
+        }
         const product = await prisma.product.update({
             where:{
                 id: Number(req.params.id)
